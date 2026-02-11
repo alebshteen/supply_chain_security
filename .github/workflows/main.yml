@@ -16,14 +16,12 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
 
-    - name: Install Syft
-      run: |
-        curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
-
-    - name: Generate SBOM
-      run: |
-        syft docker.io/library/nginx:latest -o cyclonedx-xml > sbom.xml
-
+    - name: Generate SBOM using Syft Action
+      uses: anchore/sbom-action@v0
+      with:
+        image: docker.io/library/nginx:latest
+        format: cyclonedx-xml
+        output-file: sbom.xml
 
     - name: Upload SBOM Artifact
       uses: actions/upload-artifact@v3
